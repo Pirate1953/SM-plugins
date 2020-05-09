@@ -47,7 +47,7 @@ public Action:WP_Command(myClient, args)
     return Plugin_Handled;
 }
 
-public Action:WP_STAT_Command(int myClient, int args)
+public Action:WP_STAT_Command(myClient, args)
 {
     if (args > 0 ) {
    		ReplyToCommand(myClient, "[SM] This command has no arguments");
@@ -83,7 +83,6 @@ public Action:OnPlayerRunCmd(myClient, &iButtons, &iImpulse, Float:fVel[3], Floa
     		ShowHudText(myClient, -1, "▼▼▼▼▼▼▼");
     		return Plugin_Continue;
     	}
-    	//[69-80] = UP; [81 - 82.5] - DOWN
 	}
 	return Plugin_Continue;
 }
