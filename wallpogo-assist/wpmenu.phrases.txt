@@ -1,0 +1,17 @@
+"Phrases"
+{
+	"Menu Title"
+  	{
+		"en"  "<--Wall Pogo Assistant-->"
+  	}
+
+  	"Text Fist Selection"
+  	{
+  		"en"  "[SM] First you need to sit down, else you won't be able to see indicators\n[SM] Then type '!wp' in chat to enable or disable plugin"
+  	}
+
+  	"Text Second Selection"
+  	{
+  		"en"  "[SM] If you see blue indicator above your aim icon you can make pogo up the wall\n[SM] If you see green indicator under your aim icon you can make pogo down the wall"
+  	}
+}
