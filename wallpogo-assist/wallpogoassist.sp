@@ -137,20 +137,6 @@ public int MenuHandler(Handle:menu, MenuAction:action, int param1, int param2)
     			SetMenuOptionFlags(submenu, MENUFLAG_BUTTON_EXIT);
     			DisplayMenu(submenu, param1, MENU_TIME_FOREVER);
       		}
-
-      		case 2:
-			{
-      			new Handle:submenu = CreateMenu(MenuHandler2);
-      			SetMenuTitle(submenu, "<--About-->\n ");
-      			AddMenuItem(submenu, SEL1, "Name: Wall Pogo Assistant", ITEMDRAW_DISABLED);
-      			AddMenuItem(submenu, SEL2, "Author: Master Cake", ITEMDRAW_DISABLED);
-      			AddMenuItem(submenu, SEL3, "Version: 1.0\n ", ITEMDRAW_DISABLED);
-      			AddMenuItem(submenu, SEL4, "Description: Plugin helps jumpers to learn Wall Pogo. Move your mouse slowly and carefully\nto make wall pogo without accidental misfires\n ", ITEMDRAW_DISABLED);
-    			AddMenuItem(submenu, SEL5, "This is tested for 'Original' rocket launcher primary. This means, threrefore that Wall Pogo\nwith Stock rocket launcher isn't perfect as expected. The thing is 'Stock' fires from right/left side.", ITEMDRAW_DISABLED);
-    			SetMenuExitButton(submenu, true);
-    			SetMenuOptionFlags(submenu, MENUFLAG_BUTTON_EXIT);
-    			DisplayMenu(submenu, param1, MENU_TIME_FOREVER);
-      		}
   		}
   	}
 
@@ -177,7 +163,6 @@ public Action:WPMENU_Command(myClient, args)
 	SetMenuTitle(menu, "<--Wall Pogo Assistant-->");
 	AddMenuItem(menu, SEL1, "How to Enable/Disable plugin");
 	AddMenuItem(menu, SEL2, "How to use");
-	AddMenuItem(menu, SEL3, "About plugin");
 	SetMenuExitButton(menu, true);
 	SetMenuOptionFlags(menu, MENUFLAG_BUTTON_EXIT);
 	DisplayMenu(menu, myClient, MENU_TIME_FOREVER);
