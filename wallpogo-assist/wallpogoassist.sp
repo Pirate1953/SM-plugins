@@ -17,7 +17,7 @@ public Plugin:myinfo =
 {
 	name = "Wall Pogo Assistant",
 	author = "Master Cake",
-	description = "This plugin hepls jumpers to learn Wall Pogo",
+	description = "This plugin helps jumpers to learn Wall Pogo",
 	version = "1.0",
 	url = "http://www.sourcemod.net/"
 };
@@ -132,7 +132,7 @@ public int MenuHandler(Handle:menu, MenuAction:action, int param1, int param2)
       			SetMenuTitle(submenu, "<--Wall Pogo Assistant-->\n ");
       			AddMenuItem(submenu, SEL1, "If you see blue indicator above your aim icon you can make pogo up the wall", ITEMDRAW_DISABLED);
       			AddMenuItem(submenu, SEL2, "If you see green indicator under your aim icon you can make pogo down the wall\n ", ITEMDRAW_DISABLED);
-      			AddMenuItem(submenu, SEL3, "If you see yellow indicator you can make pogo\nwithout movement on vertical (doesn't alaways work)", ITEMDRAW_DISABLED);
+      			AddMenuItem(submenu, SEL3, "If you see yellow indicator you can make pogo\nwithout movement on vertical (doesn't always work)", ITEMDRAW_DISABLED);
     			SetMenuExitButton(submenu, true);
     			SetMenuOptionFlags(submenu, MENUFLAG_BUTTON_EXIT);
     			DisplayMenu(submenu, param1, MENU_TIME_FOREVER);
@@ -145,7 +145,7 @@ public int MenuHandler(Handle:menu, MenuAction:action, int param1, int param2)
       			AddMenuItem(submenu, SEL1, "Name: Wall Pogo Assistant", ITEMDRAW_DISABLED);
       			AddMenuItem(submenu, SEL2, "Author: Master Cake", ITEMDRAW_DISABLED);
       			AddMenuItem(submenu, SEL3, "Version: 1.0\n ", ITEMDRAW_DISABLED);
-      			AddMenuItem(submenu, SEL4, "Description: Plugin hepls jumpers to learn Wall Pogo. Move your mouse slowly and carefully\nto make wall pogo without accidental misfires\n ", ITEMDRAW_DISABLED);
+      			AddMenuItem(submenu, SEL4, "Description: Plugin helps jumpers to learn Wall Pogo. Move your mouse slowly and carefully\nto make wall pogo without accidental misfires\n ", ITEMDRAW_DISABLED);
     			AddMenuItem(submenu, SEL5, "This is tested for 'Original' rocket launcher primary. This means, threrefore that Wall Pogo\nwith Stock rocket launcher isn't perfect as expected. The thing is 'Stock' fires from right/left side.", ITEMDRAW_DISABLED);
     			SetMenuExitButton(submenu, true);
     			SetMenuOptionFlags(submenu, MENUFLAG_BUTTON_EXIT);
