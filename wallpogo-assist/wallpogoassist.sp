@@ -82,6 +82,7 @@ public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:fVel[3], Fl
 {
 	if(IsPlayerAlive(myClient) && IsValidClient(myClient) && WP_ENABLED[myClient] && myButtons & IN_DUCK)
 	{
+    	ClearSyncHud(myClient, HudDisplayWP);
     	static float:FL_Angles[3];
     	GetClientEyeAngles(myClient, FL_Angles);
     	if (FL_Angles[0] >= 75.0 && FL_Angles[0] <= 79.9)
