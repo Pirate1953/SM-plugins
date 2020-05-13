@@ -25,8 +25,10 @@ public OnPluginStart()
 {
   cvarEnabled = CreateConVar("sm_plugin_enabled", "0", "Enable/Disable Plugin", _, true, 0.0, true, 1.0);
   PLUGIN_ENABLED = GetConVarBool(cvarEnabled);
-  RegAdminCmd("sm_setpson", ADMINSY_Command, 0, "Enable/disable Pefrect Sync plugin");
+  RegAdminCmd("sm_setpson", ADMINSY_Command, 0, "Enable/disable Perfect Sync plugin");
   RegConsoleCmd("sm_makesync", SY_Command, "Command to enable sync for realised rockets");
+
+  AutoExecConfig(true, "plugin.perfectsync");
 }
 
 public Action:ADMINSY_Command(myClient, args)
