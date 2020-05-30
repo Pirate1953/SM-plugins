@@ -8,9 +8,13 @@ new bool:JB_ENABLED[MAXPLAYERS + 1];
 new g_sprite;
 new bool:FLAG[MAXPLAYERS + 1];
 
+float FL_PosTarget[MAXPLAYERS + 1][3];
+float FL_Ang[MAXPLAYERS + 1][3];
 float FL_Pos[MAXPLAYERS + 1][3];
 float FL_PosEnd[MAXPLAYERS + 1][3];
 float FL_Vel[MAXPLAYERS + 1][3];
+
+float FL_PosEntity[MAXPLAYERS + 1][3];
 
 public Plugin:myinfo =
 {
@@ -47,7 +51,6 @@ public Action:JB_Command(myClient, args)
     	if (!JB_ENABLED[myClient]) {
     		JB_ENABLED[myClient] = true;
     		ReplyToCommand(myClient, "[SM] JB Mode Enabled!");
-    		//CreateTimer(0.0, DrawBeam, myClient, TIMER_REPEAT);
     	}
     	else {
     		JB_ENABLED[myClient] = false;
@@ -56,36 +59,6 @@ public Action:JB_Command(myClient, args)
     }
 
     return Plugin_Handled;
-}
-
-stock Action:DrawBeam(Handle timer, int myClient)
-{
-    int color[4];
-	color[0] = 025;
-	color[1] = 144;
-	color[2] = 255;
-	color[3] = 255;
-
-    if (!JB_ENABLED[myClient])
-    {
-    	return Plugin_Stop;
-    }
-
-    if (!FLAG[myClient])
-    {
-    	GetClientEyePosition(myClient, FL_Pos[myClient]);
-    	FLAG[myClient] = true;
-    	return Plugin_Continue;
-    }
-    if (FLAG[myClient])
-    {
-    	GetClientEyePosition(myClient, FL_PosEnd[myClient]);
-    	TE_SetupBeamPoints(FL_Pos[myClient], FL_PosEnd[myClient], g_sprite, 0, 0, 0, 10.0, 10.0, 10.0, 10, 0.0, color, 0);
-    	TE_SendToAll();
-    	FLAG[myClient] = false;
-    	return Plugin_Continue;
-    }
-    return Plugin_Continue;
 }
 
 public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:fVel[3], Float:fAngles[3], &myWeapon)
@@ -102,18 +75,71 @@ public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:fVel[3], Fl
 		if (!FLAG[myClient])
 		{
 			GetClientEyePosition(myClient, FL_Pos[myClient]);
+			FL_Pos[myClient][2] -= 20.0;
 			FLAG[myClient] = true;
 			return Plugin_Continue;
 		}
 		if (FLAG[myClient])
 		{
 			GetClientEyePosition(myClient, FL_PosEnd[myClient]);
-			TE_SetupBeamPoints(FL_Pos[myClient], FL_PosEnd[myClient], g_sprite, 0, 0, 0, 15.0, 20.0, 20.0, 10, 0.0, color, 0);
+			FL_PosEnd[myClient][2] -= 20.0;
+			TE_SetupBeamPoints(FL_Pos[myClient], FL_PosEnd[myClient], g_sprite, 0, 0, 0, 5.0, 25.0, 25.0, 10, 0.0, color, 0);
 			TE_SendToAll();
 			FLAG[myClient] = false;
 			return Plugin_Continue;
 		}
 		return Plugin_Continue;
+	}
+	return Plugin_Continue;
+}
+
+public bool TraceFilter(int myEntity, int myMask, any myData) {
+	return myEntity != myData && !IsValidClient(myEntity);
+}
+
+public void OnEntityCreated(int myEntity, const char[] sClassName) {
+	if (StrContains(sClassName, "tf_projectile_") == 0) {
+		if (StrEqual(sClassName[14], "rocket")) {
+			SDKHook(myEntity, SDKHook_SpawnPost, Hook_RocketSpawn);
+		} else {
+			//TODO
+		}
+	}
+}
+
+public Action:Hook_RocketSpawn(int myEntity)
+{
+	new myEntityRef = EntIndexToEntRef(myEntity); //Converts an entity index into a serial encoded entity reference.
+	static prevEntityRef = -1;
+	int Owner = GetEntPropEnt(myEntity, Prop_Data, "m_hOwnerEntity");
+
+	if (!IsValidClient(Owner)) {
+		return Plugin_Continue;
+	}
+
+	if (JB_ENABLED[Owner] && prevEntityRef != myEntityRef)
+	{
+		prevEntityRef = myEntityRef; //To execute the code 1 time in this scope
+
+		int color[4];
+		color[0] = 128;
+		color[1] = 000;
+		color[2] = 128;
+		color[3] = 255;
+
+		GetClientEyePosition(Owner, FL_Pos[Owner]);
+		GetClientEyeAngles(Owner, FL_Ang[Owner]);
+
+		GetEntPropVector(myEntity, Prop_Data, "m_vecOrigin", FL_PosEntity[Owner]);
+
+		Handle hTr = TR_TraceRayFilterEx(FL_Pos[Owner], FL_Ang[Owner], MASK_SHOT_HULL, RayType_Infinite, TraceFilter, Owner);
+		if (TR_DidHit(hTr))
+		{
+			TR_GetEndPosition(FL_PosTarget[Owner], hTr);
+			TE_SetupBeamPoints(FL_PosEntity[Owner], FL_PosTarget[Owner], g_sprite, 0, 0, 0, 5.0, 5.0, 5.0, 10, 0.0, color, 0);
+			TE_SendToAll();
+		}
+		delete hTr;
 	}
 	return Plugin_Continue;
 }
