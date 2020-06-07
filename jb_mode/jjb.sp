@@ -14,7 +14,6 @@ bool PL_Enabled;
 
 float FL_PosClientPrev[MAXPLAYERS + 1][3];
 float FL_PosClient[MAXPLAYERS + 1][3];
-float FL_AngClient[MAXPLAYERS + 1][3];
 float FL_VelClient[MAXPLAYERS + 1][3];
 
 Handle HudDisplay;
@@ -256,20 +255,14 @@ public Action:RockSpawn(int myEntity)
 			color[3] = 255;
 
 			float FL_PosEntity[3];
+			float FL_AngEntity[3];
 			float FL_PosTarget[3];
 
 			GetClientEyePosition(myOwner, FL_PosClient[myOwner]);
-			GetClientEyeAngles(myOwner, FL_AngClient[myOwner]);
 			GetEntPropVector(myEntity, Prop_Data, "m_vecOrigin", FL_PosEntity);
+			GetEntPropVector(myEntity, Prop_Data, "m_angRotation", FL_AngEntity);
 
-			if (IsValidEntity(myEntity))
-			{
-				int myGlow = AddOutline(myEntity);
-				SetVariantColor(color);
-				AcceptEntityInput(myGlow, "SetGlowColor");
-			}
-
-			Handle Trace = TR_TraceRayFilterEx(FL_PosClient[myOwner], FL_AngClient[myOwner], MASK_SHOT_HULL, RayType_Infinite, TraceFilter);
+			Handle Trace = TR_TraceRayFilterEx(FL_PosEntity, FL_AngEntity, MASK_SHOT_HULL, RayType_Infinite, TraceFilter, myEntity);
 			if (TR_DidHit(Trace))
 			{
 				TR_GetEndPosition(FL_PosTarget, Trace);
@@ -277,6 +270,13 @@ public Action:RockSpawn(int myEntity)
 				TE_SendToAllInRange(FL_PosClient[myOwner], RangeType_Visibility, 0.1);
 			}
 			delete Trace;
+
+			if (IsValidEntity(myEntity))
+			{
+				int myGlow = AddOutline(myEntity);
+				SetVariantColor(color);
+				AcceptEntityInput(myGlow, "SetGlowColor");
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -327,6 +327,10 @@ stock bool:IsValidClient(myClient, bool:Replay = true)
   return true;
 }
 
+/**
+ * Creates tf_glow entity for projectile (makes outline)
+ * @param myEntity        Entity index.
+ */
 stock int AddOutline(int myEntity)
 {
 	char entName[64];
