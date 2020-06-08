@@ -6,7 +6,7 @@
 
 #define MODEL_MARKER	"models/extras/info_speech.mdl"
 #define SPRITE_BEAM	"materials/sprites/laser.vmt"
-#define PLUGIN_VERSION	"1.0.7"
+#define PLUGIN_VERSION	"1.0.9"
 
 bool JB_ENABLED[MAXPLAYERS + 1];
 bool FLAG[MAXPLAYERS + 1];
@@ -271,7 +271,7 @@ public Action:RockSpawn(int myEntity)
 			}
 			delete Trace;
 
-			if (IsValidEntity(myEntity))
+			if (IsValidEntity(myEntity) && !TR_PointOutsideWorld(FL_PosEntity))
 			{
 				int myGlow = AddOutline(myEntity);
 				SetVariantColor(color);
@@ -318,6 +318,11 @@ public Action:ProjSpawn(int myEntity)
 
 /////////////////////////////// <-- STOCKS --> ////////////////////////////////////////////////
 
+/**
+ * Checks client validity
+ * @param myEntity        Entity index.
+ * @param Replay          Logical bool parameter.
+ */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {
   if(myClient <= 0 || myClient > MaxClients || !IsClientInGame(myClient))
