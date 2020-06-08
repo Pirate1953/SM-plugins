@@ -301,7 +301,10 @@ public Action:ProjSpawn(int myEntity)
 			color[2] = 128;
 			color[3] = 255;
 
-			if (IsValidEntity(myEntity))
+			float FL_PosEntity[3];
+			GetEntPropVector(myEntity, Prop_Data, "m_vecOrigin", FL_PosEntity);
+
+			if (IsValidEntity(myEntity) && !TR_PointOutsideWorld(FL_PosEntity))
 			{
 				int myGlow = AddOutline(myEntity);
 				SetVariantColor(color);
