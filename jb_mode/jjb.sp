@@ -32,6 +32,9 @@ public Plugin:myinfo =
 	url = ""
 }
 
+/**
+ * Called when the plugin is fully initialized and all known external references are resolved
+ */
 public OnPluginStart()
 {
 	CreateConVar("jjb_version", PLUGIN_VERSION, "JB Mode Version", FCVAR_REPLICATED | FCVAR_SPONLY | FCVAR_DONTRECORD | FCVAR_NOTIFY);
@@ -49,6 +52,9 @@ public OnPluginStart()
 	HudDisplay = CreateHudSynchronizer();
 }
 
+/**
+ * Called when a console variable's value is changed
+ */
 public ConsoleVarChange(Handle:CVar, const String:oldValue[], const String:newValue[])
 {
 	if(CVar == g_pluginEnabled)
@@ -57,6 +63,9 @@ public ConsoleVarChange(Handle:CVar, const String:oldValue[], const String:newVa
 	}
 }
 
+/**
+ * Called when the map is loaded
+ */
 public OnMapStart()
 {
 	sprite = PrecacheModel(SPRITE_BEAM);
@@ -64,12 +73,22 @@ public OnMapStart()
 	PrecacheModel(MODEL_MARKER);
 }
 
+/**
+ * Called when the plugin is fully initialized and all known external references are resolved
+ * @param myClient - Client index
+ */
 public OnClientPutInServer(myClient)
 {
 	JB_ENABLED[myClient] = false;
 	FLAG[myClient] = false;
 }
 
+/**
+ * Changes pluign state
+ * @param myClient - Client index
+ * @param args - Number of arguments that were in the argument string
+ * @return - Action
+ */
 public Action:JBS_Command(myClient, args)
 {
 	if (args == 1)
@@ -99,6 +118,12 @@ public Action:JBS_Command(myClient, args)
 	return Plugin_Handled;
 }
 
+/**
+ * Enables JB mode for clinet
+ * @param myClient - Client index
+ * @param args - Number of arguments that were in the argument string
+ * @return - Action
+ */
 public Action:JB_Command(myClient, args)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -128,6 +153,12 @@ public Action:JB_Command(myClient, args)
 	return Plugin_Handled;
 }
 
+/**
+ * Check if JB mode is on then creates an entity in specified position
+ * @param myClient - Client index
+ * @param args - Number of arguments that were in the argument string
+ * @return - Action
+ */
 public Action:JBM_Command(myClient, args)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -164,6 +195,16 @@ public Action:JBM_Command(myClient, args)
 	return Plugin_Handled;
 }
 
+/**
+ * Called when a clients movement buttons are being processed
+ * @param myClient - Client index
+ * @param myButtons - Copyback buffer containing the current commands
+ * @param myImpulse - Copyback buffer containing the current impulse command
+ * @param myVel - Players desired velocity
+ * @param myAng - Players desired view angles
+ * @param myWeapon - Entity index of the new weapon if player switches weapon, 0 otherwise
+ * @return - Action
+ */
 public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:myVel[3], Float:myAng[3], &myWeapon)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -215,11 +256,23 @@ public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:myVel[3], F
 	return Plugin_Continue;
 }
 
+/**
+ * Filters the entity
+ * @param myEntity - Entity index for filtering
+ * @param MyName - Mask for filtering
+ * @param myData - Data for filtering
+ * @return - True to allow the current entity to be hit, otherwise false
+ */
 public bool TraceFilter(int myEntity, int myMask, any myData)
 {
 	return ((myEntity != myData) && !IsValidClient(myEntity));
 }
 
+/**
+ * Creates the hook when entity is created
+ * @param myEntity - Entity index for which function creates the hook
+ * @param MyName - Class name
+ */
 public void OnEntityCreated(int myEntity, const char[] MyName)
 {
 	if (StrContains(MyName, "tf_projectile_") == 0)
@@ -235,6 +288,11 @@ public void OnEntityCreated(int myEntity, const char[] MyName)
 	}
 }
 
+/**
+ * Creates the beam when entity (rocket) is released
+ * @param myEntity - Entity index for which function creates the beam
+ * @return - Action
+ */
 public Action:RockSpawn(int myEntity)
 {
 	new myRef = EntIndexToEntRef(myEntity); //Converts an entity index into a serial encoded entity reference.
@@ -282,6 +340,11 @@ public Action:RockSpawn(int myEntity)
 	return Plugin_Continue;
 }
 
+/**
+ * Creates the beam when entity (projectile) is released
+ * @param myEntity - Entity index for which function creates the beam
+ * @return - Action
+ */
 public Action:ProjSpawn(int myEntity)
 {
 	new myRef = EntIndexToEntRef(myEntity); //Converts an entity index into a serial encoded entity reference.
@@ -322,9 +385,9 @@ public Action:ProjSpawn(int myEntity)
 /////////////////////////////// <-- STOCKS --> ////////////////////////////////////////////////
 
 /**
- * Checks client validity
- * @param myEntity        Entity index.
- * @param Replay          Logical bool parameter.
+ * Returns false if client is invalid, true otherwie
+ * @param myClient - Client index
+ * @param Replay - Logical bool parameter
  */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {
@@ -336,8 +399,9 @@ stock bool:IsValidClient(myClient, bool:Replay = true)
 }
 
 /**
- * Creates tf_glow entity for projectile (makes outline)
- * @param myEntity        Entity index.
+ * Creates tf_glow entity for projectile (makes outline) and returns its index
+ * @param myEntity - Entity index
+ * @return - Created entity index
  */
 stock int AddOutline(int myEntity)
 {

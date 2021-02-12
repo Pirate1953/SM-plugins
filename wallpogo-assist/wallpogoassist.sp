@@ -23,6 +23,9 @@ public Plugin:myinfo =
 	url = ""
 };
 
+/**
+ * Called when the plugin is fully initialized and all known external references are resolved
+ */
 public OnPluginStart()
 {
 	CreateConVar("wp_version", PLUGIN_VERSION, "Wall Pogo Assistant Version", FCVAR_REPLICATED | FCVAR_SPONLY | FCVAR_DONTRECORD | FCVAR_NOTIFY);
@@ -40,6 +43,9 @@ public OnPluginStart()
 	HudDisplay = CreateHudSynchronizer();
 }
 
+/**
+ * Called when a console variable's value is changed
+ */
 public ConsoleVarChange(Handle:CVar, const String:oldValue[], const String:newValue[])
 {
 	if(CVar == g_pluginEnabled)
@@ -48,12 +54,22 @@ public ConsoleVarChange(Handle:CVar, const String:oldValue[], const String:newVa
 	}
 }
 
+/**
+ * Called when the plugin is fully initialized and all known external references are resolved
+ * @param myClient - Client index
+ */
 public OnClientPutInServer(myClient)
 {
 	WP_ENABLED[myClient] = false;
 	FOL_ENABLED[myClient] = false;
 }
 
+/**
+ * Enables Wall Pogo Assistant for clinet
+ * @param myClient - Client index
+ * @param args - Number of arguments that were in the argument string
+ * @return - Action
+ */
 public Action:WP_Command(myClient, args)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -74,6 +90,12 @@ public Action:WP_Command(myClient, args)
 	return Plugin_Handled;
 }
 
+/**
+ * Enables Follow Rockets Mode for clinet
+ * @param myClient - Client index
+ * @param args - Number of arguments that were in the argument string
+ * @return - Action
+ */
 public Action:FOL_Command(myClient, args)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -95,6 +117,16 @@ public Action:FOL_Command(myClient, args)
 	return Plugin_Handled;
 }
 
+/**
+ * Called when a clients movement buttons are being processed
+ * @param myClient - Client index
+ * @param myButtons - Copyback buffer containing the current commands
+ * @param myImpulse - Copyback buffer containing the current impulse command
+ * @param myVel - Players desired velocity
+ * @param myAng - Players desired view angles
+ * @param myWeapon - Entity index of the new weapon if player switches weapon, 0 otherwise
+ * @return - Action
+ */
 public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:myVel[3], Float:myAng[3], &myWeapon)
 {
 	if(!PL_Enabled || !IsValidClient(myClient))
@@ -131,6 +163,11 @@ public Action:OnPlayerRunCmd(myClient, &myButtons, &myImpulse, Float:myVel[3], F
 	return Plugin_Continue;
 }
 
+/**
+ * Creates the hook when entity is created
+ * @param myEntity - Entity index for which function creates the hook
+ * @param MyName - Class name
+ */
 public void OnEntityCreated(int myEntity, const char[] MyName)
 {
 	if (StrContains(MyName, "tf_projectile_") == 0)
@@ -142,6 +179,11 @@ public void OnEntityCreated(int myEntity, const char[] MyName)
 	}
 }
 
+/**
+ * Creates the timer when entity (rocket) is released
+ * @param myEntity - Entity index for which function creates the beam
+ * @return - Action
+ */
 public Action:RockSpawn(int myEntity)
 {
 	new myRef = EntIndexToEntRef(myEntity); //Converts an entity index into a serial encoded entity reference.
@@ -161,6 +203,11 @@ public Action:RockSpawn(int myEntity)
 	return Plugin_Continue;
 }
 
+/**
+ * Changes velocity, rotation and abs vectors for the given entity
+ * @param myEntity - Entity index for which function changes vectors
+ * @return - Action
+ */
 public Action:rocketCheck(Handle timer, int myEntity)
 {
 	if(!IsValidEntity(myEntity))
@@ -205,6 +252,13 @@ public Action:rocketCheck(Handle timer, int myEntity)
 	return Plugin_Continue;
 }
 
+/**
+ * Filters the entity
+ * @param myEntity - Entity index for filtering
+ * @param MyName - Mask for filtering
+ * @param myData - Data for filtering
+ * @return - True to allow the current entity to be hit, otherwise false
+ */
 public bool TraceFilter(int myEntity, int myMask, any myData)
 {
 	if (myEntity <= 0)
@@ -227,9 +281,9 @@ public bool TraceFilter(int myEntity, int myMask, any myData)
 /////////////////////////////// <-- STOCKS --> ////////////////////////////////////////////////
 
 /**
- * Checks client validity
- * @param myEntity        Entity index.
- * @param Replay          Logical bool parameter.
+ * Returns false if client is invalid, true otherwie
+ * @param myClient - Client index
+ * @param Replay - Logical bool parameter
  */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {
@@ -241,19 +295,19 @@ stock bool:IsValidClient(myClient, bool:Replay = true)
 }
 
 /**
- * Gets vector where player looks
- * @param myEntity        Entity index.
- * @param FL_TargetPos    Output buffer.
+ * Gets position vector where client looks
+ * @param myClient - Client index
+ * @param FL_TargetPos - Output buffer that stores received vector
  */
- stock void GetTargetOfPlayerEye(int myEntity, float FL_TargetPos[3])
+ stock void GetTargetOfPlayerEye(int myClient, float FL_TargetPos[3])
  {
  	float FL_Pos[3];
  	float FL_Ang[3];
 
- 	GetClientEyePosition(myEntity, FL_Pos);
- 	GetClientEyeAngles(myEntity, FL_Ang);
+ 	GetClientEyePosition(myClient, FL_Pos);
+ 	GetClientEyeAngles(myClient, FL_Ang);
 
- 	Handle Trace = TR_TraceRayFilterEx(FL_Pos, FL_Ang, MASK_SHOT_HULL, RayType_Infinite, TraceFilter, myEntity);
+ 	Handle Trace = TR_TraceRayFilterEx(FL_Pos, FL_Ang, MASK_SHOT_HULL, RayType_Infinite, TraceFilter, myClient);
 
  	if(TR_DidHit(Trace))
 	{
