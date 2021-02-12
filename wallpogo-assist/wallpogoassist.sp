@@ -281,10 +281,10 @@ public bool TraceFilter(int myEntity, int myMask, any myData)
 /////////////////////////////// <-- STOCKS --> ////////////////////////////////////////////////
 
 /**
- * Returns false if client is invalid, true otherwie
+ * Returns false if client is invalid, true otherwise
  * @param myClient - Client index
  * @param Replay - Logical bool parameter
- * @return - False if client is invalid, true otherwie
+ * @return - False if client is invalid, true otherwise
  */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {
