@@ -119,7 +119,7 @@ public Action:JBS_Command(myClient, args)
 }
 
 /**
- * Enables JB mode for clinet
+ * Enables JB mode for client
  * @param myClient - Client index
  * @param args - Number of arguments that were in the argument string
  * @return - Action
@@ -388,6 +388,7 @@ public Action:ProjSpawn(int myEntity)
  * Returns false if client is invalid, true otherwie
  * @param myClient - Client index
  * @param Replay - Logical bool parameter
+ * @return - False if client is invalid, true otherwie
  */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {

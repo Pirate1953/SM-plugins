@@ -65,7 +65,7 @@ public OnClientPutInServer(myClient)
 }
 
 /**
- * Enables Wall Pogo Assistant for clinet
+ * Enables Wall Pogo Assistant for client
  * @param myClient - Client index
  * @param args - Number of arguments that were in the argument string
  * @return - Action
@@ -91,7 +91,7 @@ public Action:WP_Command(myClient, args)
 }
 
 /**
- * Enables Follow Rockets Mode for clinet
+ * Enables Follow Rockets Mode for client
  * @param myClient - Client index
  * @param args - Number of arguments that were in the argument string
  * @return - Action
@@ -284,6 +284,7 @@ public bool TraceFilter(int myEntity, int myMask, any myData)
  * Returns false if client is invalid, true otherwie
  * @param myClient - Client index
  * @param Replay - Logical bool parameter
+ * @return - False if client is invalid, true otherwie
  */
 stock bool:IsValidClient(myClient, bool:Replay = true)
 {
