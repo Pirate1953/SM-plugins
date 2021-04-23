@@ -74,7 +74,7 @@ public OnMapStart()
 }
 
 /**
- * Called when the plugin is fully initialized and all known external references are resolved
+ * Called when a client is entering the game
  * @param myClient - Client index
  */
 public OnClientPutInServer(myClient)
